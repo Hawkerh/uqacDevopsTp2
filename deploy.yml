@@ -3,7 +3,7 @@ trigger: none
 resources:
   pipelines:
   - pipeline: build
-    source: build-pipeline # Nom de votre pipeline de build
+    source: build # Nom de votre pipeline de build
     trigger: 
       branches:
         include:
