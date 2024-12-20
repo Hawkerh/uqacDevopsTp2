@@ -59,7 +59,7 @@
           "kind": "functionapp",
           "location": "[parameters('location')]",
           "tags": {
-              "hidden-link: /app-insights-resource-id": "/subscriptions/cbaeadee-d4e6-419d-a0c8-2e1040e166be/resourceGroups/gaal/providers/Microsoft.Insights/components/gaaltriggerblob"
+              "hidden-link: /app-insights-resource-id": "/subscriptions/43b74e9f-9d96-4aa0-859d-e36e8ba472b9/resourceGroups/gaal/providers/Microsoft.Insights/components/gaaltriggerblob"
           },
           "dependsOn": [
               "microsoft.insights/components/gaaltriggerblob",
@@ -87,11 +87,11 @@
                       },
                       {
                           "name": "AzureWebJobsStorage",
-                          "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccountName'),';AccountKey=',listKeys(resourceId('cbaeadee-d4e6-419d-a0c8-2e1040e166be','gaal','Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2019-06-01').keys[0].value,';EndpointSuffix=','core.windows.net')]"
+                          "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccountName'),';AccountKey=',listKeys(resourceId('43b74e9f-9d96-4aa0-859d-e36e8ba472b9','gaal','Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2019-06-01').keys[0].value,';EndpointSuffix=','core.windows.net')]"
                       },
                       {
                           "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
-                          "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccountName'),';AccountKey=',listKeys(resourceId('cbaeadee-d4e6-419d-a0c8-2e1040e166be','gaal','Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2019-06-01').keys[0].value,';EndpointSuffix=','core.windows.net')]"
+                          "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccountName'),';AccountKey=',listKeys(resourceId('43b74e9f-9d96-4aa0-859d-e36e8ba472b9','gaal','Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2019-06-01').keys[0].value,';EndpointSuffix=','core.windows.net')]"
                       },
                       {
                           "name": "WEBSITE_CONTENTSHARE",
@@ -172,7 +172,7 @@
               "Request_Source": "IbizaWebAppExtensionCreate",
               "Flow_Type": "Redfield",
               "Application_Type": "web",
-              "WorkspaceResourceId": "/subscriptions/cbaeadee-d4e6-419d-a0c8-2e1040e166be/resourceGroups/gaal/providers/Microsoft.OperationalInsights/workspaces/DefaultWorkspace-cbaeadee-d4e6-419d-a0c8-2e1040e166be-CCAN"
+              "WorkspaceResourceId": "/subscriptions/43b74e9f-9d96-4aa0-859d-e36e8ba472b9/resourceGroups/gaal/providers/Microsoft.OperationalInsights/workspaces/DefaultWorkspace-43b74e9f-9d96-4aa0-859d-e36e8ba472b9-CCAN"
           }
       },
       {
@@ -191,7 +191,7 @@
                   "resources": [
                       {
                           "apiVersion": "2020-08-01",
-                          "name": "DefaultWorkspace-cbaeadee-d4e6-419d-a0c8-2e1040e166be-CCAN",
+                          "name": "DefaultWorkspace-43b74e9f-9d96-4aa0-859d-e36e8ba472b9-CCAN",
                           "type": "Microsoft.OperationalInsights/workspaces",
                           "location": "canadacentral",
                           "properties": {}
