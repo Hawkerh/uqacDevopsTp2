@@ -1,0 +1,102 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\d3cis\\Documents\\portfolio\\uqacDevopsTp2\\DeployementTP2\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{5FEE7C86-B97F-4BE1-8672-F00C58FE08E3}|functionApp\\functionApp.deployproj|c:\\users\\d3cis\\documents\\portfolio\\uqacdevopstp2\\deployementtp2\\functionapp\\azuredeploy.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{5FEE7C86-B97F-4BE1-8672-F00C58FE08E3}|functionApp\\functionApp.deployproj|solutionrelative:functionapp\\azuredeploy.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5FEE7C86-B97F-4BE1-8672-F00C58FE08E3}|functionApp\\functionApp.deployproj|c:\\users\\d3cis\\documents\\portfolio\\uqacdevopstp2\\deployementtp2\\functionapp\\azuredeploy.parameters.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{5FEE7C86-B97F-4BE1-8672-F00C58FE08E3}|functionApp\\functionApp.deployproj|solutionrelative:functionapp\\azuredeploy.parameters.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CA261397-BBBA-4AAB-8BC5-B3CAFF435E6F}|BlobFunction\\BlobFunction.csproj|c:\\users\\d3cis\\documents\\portfolio\\uqacdevopstp2\\deployementtp2\\blobfunction\\function1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CA261397-BBBA-4AAB-8BC5-B3CAFF435E6F}|BlobFunction\\BlobFunction.csproj|solutionrelative:blobfunction\\function1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EF5475F3-EBC0-4940-A21C-8699BD8A9413}|storage\\storage.deployproj|c:\\users\\d3cis\\documents\\portfolio\\uqacdevopstp2\\deployementtp2\\storage\\azuredeploy.parameters.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{EF5475F3-EBC0-4940-A21C-8699BD8A9413}|storage\\storage.deployproj|solutionrelative:storage\\azuredeploy.parameters.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EF5475F3-EBC0-4940-A21C-8699BD8A9413}|storage\\storage.deployproj|c:\\users\\d3cis\\documents\\portfolio\\uqacdevopstp2\\deployementtp2\\storage\\azuredeploy.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{EF5475F3-EBC0-4940-A21C-8699BD8A9413}|storage\\storage.deployproj|solutionrelative:storage\\azuredeploy.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "azuredeploy.json",
+              "DocumentMoniker": "C:\\Users\\d3cis\\Documents\\portfolio\\uqacDevopsTp2\\DeployementTP2\\functionApp\\azuredeploy.json",
+              "RelativeDocumentMoniker": "functionApp\\azuredeploy.json",
+              "ToolTip": "C:\\Users\\d3cis\\Documents\\portfolio\\uqacDevopsTp2\\DeployementTP2\\functionApp\\azuredeploy.json",
+              "RelativeToolTip": "functionApp\\azuredeploy.json",
+              "ViewState": "AgIAADYAAAAAAAAAAAAAABUAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-12-20T09:27:39.111Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "azuredeploy.parameters.json",
+              "DocumentMoniker": "C:\\Users\\d3cis\\Documents\\portfolio\\uqacDevopsTp2\\DeployementTP2\\functionApp\\azuredeploy.parameters.json",
+              "RelativeDocumentMoniker": "functionApp\\azuredeploy.parameters.json",
+              "ToolTip": "C:\\Users\\d3cis\\Documents\\portfolio\\uqacDevopsTp2\\DeployementTP2\\functionApp\\azuredeploy.parameters.json",
+              "RelativeToolTip": "functionApp\\azuredeploy.parameters.json",
+              "ViewState": "AgIAABUAAAAAAAAAAAAIwDIAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-12-20T09:27:37.999Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Function1.cs",
+              "DocumentMoniker": "C:\\Users\\d3cis\\Documents\\portfolio\\uqacDevopsTp2\\DeployementTP2\\BlobFunction\\Function1.cs",
+              "RelativeDocumentMoniker": "BlobFunction\\Function1.cs",
+              "ToolTip": "C:\\Users\\d3cis\\Documents\\portfolio\\uqacDevopsTp2\\DeployementTP2\\BlobFunction\\Function1.cs",
+              "RelativeToolTip": "BlobFunction\\Function1.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-20T09:01:52.227Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "azuredeploy.parameters.json",
+              "DocumentMoniker": "C:\\Users\\d3cis\\Documents\\portfolio\\uqacDevopsTp2\\DeployementTP2\\storage\\azuredeploy.parameters.json",
+              "RelativeDocumentMoniker": "storage\\azuredeploy.parameters.json",
+              "ToolTip": "C:\\Users\\d3cis\\Documents\\portfolio\\uqacDevopsTp2\\DeployementTP2\\storage\\azuredeploy.parameters.json",
+              "RelativeToolTip": "storage\\azuredeploy.parameters.json",
+              "ViewState": "AgIAABwAAAAAAAAAAAAuwEcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-12-19T23:25:11.682Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "azuredeploy.json",
+              "DocumentMoniker": "C:\\Users\\d3cis\\Documents\\portfolio\\uqacDevopsTp2\\DeployementTP2\\storage\\azuredeploy.json",
+              "RelativeDocumentMoniker": "storage\\azuredeploy.json",
+              "ToolTip": "C:\\Users\\d3cis\\Documents\\portfolio\\uqacDevopsTp2\\DeployementTP2\\storage\\azuredeploy.json",
+              "RelativeToolTip": "storage\\azuredeploy.json",
+              "ViewState": "AgIAAFoAAAAAAAAAAAAAAIgAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-12-19T23:14:46.91Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
