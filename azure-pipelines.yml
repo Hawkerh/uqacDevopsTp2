@@ -23,7 +23,7 @@ stages:
         displayName: Deploy Azure Storage using ARM Template
         inputs:
           deploymentScope: 'Resource Group'
-          azureResourceManagerConnection: 'Abonnement 1(cbaeadee-d4e6-419d-a0c8-2e1040e166be)'
+          azureResourceManagerConnection: 'Abonnement 1(6)(cbaeadee-d4e6-419d-a0c8-2e1040e166be)'
           subscriptionId: 'cbaeadee-d4e6-419d-a0c8-2e1040e166be'
           action: 'Create Or Update Resource Group'
           resourceGroupName: '$(resourceGroupName)'
@@ -43,7 +43,7 @@ stages:
         displayName: Deploy Azure Function App using ARM Template
         inputs:
           deploymentScope: 'Resource Group'
-          azureResourceManagerConnection: 'Abonnement 1(cbaeadee-d4e6-419d-a0c8-2e1040e166be)'
+          azureResourceManagerConnection: 'Abonnement 1(6)(cbaeadee-d4e6-419d-a0c8-2e1040e166be)'
           subscriptionId: 'cbaeadee-d4e6-419d-a0c8-2e1040e166be'
           action: 'Create Or Update Resource Group'
           resourceGroupName: '$(resourceGroupName)'
@@ -51,14 +51,12 @@ stages:
           templateLocation: 'Linked artifact'
           csmFile: '$(Build.SourcesDirectory)/functionApp/azuredeploy.json'
           csmParametersFile: '$(Build.SourcesDirectory)/functionApp/azuredeploy.parameters.json'
-            
-            # Deploy Service Bus Resources
           deploymentMode: 'Incremental'
       - task: AzureResourceManagerTemplateDeployment@3
         displayName: Deploy Service Bus Resources
         inputs:
           deploymentScope: 'Resource Group'
-          azureResourceManagerConnection: 'Abonnement 1(cbaeadee-d4e6-419d-a0c8-2e1040e166be)'
+          azureResourceManagerConnection: 'Abonnement 1(6)(cbaeadee-d4e6-419d-a0c8-2e1040e166be)'
           subscriptionId: 'cbaeadee-d4e6-419d-a0c8-2e1040e166be'
           action: 'Create Or Update Resource Group'
           resourceGroupName: '$(resourceGroupName)'
@@ -145,7 +143,7 @@ stages:
       - task: AzureFunctionApp@2
         displayName: Deploy Queue Function App
         inputs:
-          connectedServiceNameARM: 'Abonnement Azure 1(3e4d952d-facf-4882-a757-e4f0d348b6fb)'
+          connectedServiceNameARM: 'Abonnement Azure 1(6)(cbaeadee-d4e6-419d-a0c8-2e1040e166be)'
           appType: 'functionApp'
           appName: '$(AzureFunctionAppName)'
           deployToSlotOrASE: true
@@ -179,7 +177,7 @@ stages:
       - task: AzureFunctionApp@2
         displayName: Deploy Code to Azure Function App
         inputs:
-          connectedServiceNameARM: 'Abonnement 1(cbaeadee-d4e6-419d-a0c8-2e1040e166be)'
+          connectedServiceNameARM: 'Abonnement 1(6)(cbaeadee-d4e6-419d-a0c8-2e1040e166be)'
           appType: 'functionApp'
           appName: '$(AzureFunctionAppName)'
           deployToSlotOrASE: true
