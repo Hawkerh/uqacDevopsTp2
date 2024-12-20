@@ -1,0 +1,128 @@
+trigger: none
+
+resources:
+  pipelines:
+  - pipeline: build-pipeline
+    source: build-pipeline # Nom de votre pipeline de build
+    trigger: 
+      branches:
+        include:
+          - master
+
+pool: "default"
+
+variables:
+  resourceGroupName: 'gaal'
+  location: 'Canada Central'
+  BlobString: 'patate'
+  AzureBlob: 'storagegaal'
+  AzureFunctionAppName: 'gaaltriggerblob'
+  ServiceBusConnectionString: 'ServiceBusConnectionString'
+  ServiceBusQueueName: 'ServiceBusQueueName'
+
+stages:
+- stage: Infrastructure
+  displayName: Infrastructure Deployment
+  jobs:
+  - job: DeployInfrastructure
+    displayName: Deploy Azure Resources
+    steps:
+      - task: AzureResourceManagerTemplateDeployment@3
+        displayName: Deploy Azure Storage
+        inputs:
+          deploymentScope: 'Resource Group'
+          azureResourceManagerConnection: 'Abonnement_Al(43b74e9f-9d96-4aa0-859d-e36e8ba472b9)'
+          subscriptionId: '43b74e9f-9d96-4aa0-859d-e36e8ba472b9'
+          action: 'Create Or Update Resource Group'
+          resourceGroupName: '$(resourceGroupName)'
+          location: '$(location)'
+          templateLocation: 'Linked artifact'
+          csmFile: '$(Build.SourcesDirectory)/storage/azuredeploy.json'
+          csmParametersFile: '$(Build.SourcesDirectory)/storage/azuredeploy.parameters.json'
+          deploymentMode: 'Incremental'
+          deploymentOutputs: 'StorageAccountDeployment'
+
+      - script: |
+          echo ##vso[task.setvariable variable=BlobString;isOutput=true;isSecure=true]$(StorageAccountDeployment.blobstoragestring.value)
+        displayName: Assign BlobString Variable
+        name: AssignKey
+
+      - task: AzureResourceManagerTemplateDeployment@3
+        displayName: Deploy Function App
+        inputs:
+          deploymentScope: 'Resource Group'
+          azureResourceManagerConnection: 'Abonnement_Al(43b74e9f-9d96-4aa0-859d-e36e8ba472b9)'
+          subscriptionId: '43b74e9f-9d96-4aa0-859d-e36e8ba472b9'
+          action: 'Create Or Update Resource Group'
+          resourceGroupName: '$(resourceGroupName)'
+          location: '$(location)'
+          templateLocation: 'Linked artifact'
+          csmFile: '$(Build.SourcesDirectory)/functionApp/azuredeploy.json'
+          csmParametersFile: '$(Build.SourcesDirectory)/functionApp/azuredeploy.parameters.json'
+          deploymentMode: 'Incremental'
+
+      - task: AzureResourceManagerTemplateDeployment@3
+        displayName: Deploy Service Bus
+        inputs:
+          deploymentScope: 'Resource Group'
+          azureResourceManagerConnection: 'Abonnement_Al(43b74e9f-9d96-4aa0-859d-e36e8ba472b9)'
+          subscriptionId: '43b74e9f-9d96-4aa0-859d-e36e8ba472b9'
+          action: 'Create Or Update Resource Group'
+          resourceGroupName: '$(resourceGroupName)'
+          location: '$(location)'
+          templateLocation: 'Linked artifact'
+          csmFile: '$(Build.SourcesDirectory)/serviceBus/azuredeploy.json'
+          csmParametersFile: '$(Build.SourcesDirectory)/serviceBus/azuredeploy.parameters.json'
+          deploymentMode: 'Incremental'
+          deploymentOutputs: 'ServiceBusOutputs'
+
+      - script: |
+          echo ##vso[task.setvariable variable=ServiceBusConnectionString;isOutput=true]$(ServiceBusOutputs.ServiceBusConnectionString.value)
+          echo ##vso[task.setvariable variable=ServiceBusQueueName;isOutput=true]$(ServiceBusOutputs.ServiceBusQueueName.value)
+        displayName: Assign Service Bus Outputs
+
+- stage: DeployFunctions
+  displayName: Deploy Functions
+  dependsOn: Infrastructure
+  variables:
+    blobstring: $[ stageDependencies.Infrastructure.DeployInfrastructure.outputs['AssignKey.BlobString'] ]
+  jobs:
+  - job: DeployBlobFunction
+    displayName: Deploy Blob Function
+    steps:
+      - download: build-pipeline
+        artifact: blob-function
+        
+      - task: AzureFunctionApp@2
+        displayName: Deploy Blob Function
+        inputs:
+          connectedServiceNameARM: 'Abonnement_Al(43b74e9f-9d96-4aa0-859d-e36e8ba472b9)'
+          appType: 'functionApp'
+          appName: '$(AzureFunctionAppName)'
+          deployToSlotOrASE: true
+          resourceGroupName: '$(resourceGroupName)'
+          slotName: 'production'
+          package: '$(Pipeline.Workspace)/build-pipeline/blob-function/**/*.zip'
+          appSettings: '-Blob_ConnectionString $(blobstring) -Blob_ConnectionString__blob "https://$(AzureBlob).blob.core.windows.net/"'
+          deploymentMethod: 'runFromPackage'
+
+  - job: DeployQueueFunction
+    displayName: Deploy Queue Function
+    steps:
+      - download: build-pipeline
+        artifact: queue-function
+        
+      - task: AzureFunctionApp@2
+        displayName: Deploy Queue Function
+        inputs:
+          connectedServiceNameARM: 'Abonnement_Al(43b74e9f-9d96-4aa0-859d-e36e8ba472b9)'
+          appType: 'functionApp'
+          appName: '$(AzureFunctionAppName)'
+          deployToSlotOrASE: true
+          resourceGroupName: '$(resourceGroupName)'
+          slotName: 'production'
+          package: '$(Pipeline.Workspace)/build-pipeline/queue-function/**/*.zip'
+          appSettings: |
+            -ServiceBus_ConnectionString $(ServiceBusConnectionString)
+            -ServiceBus_QueueName $(ServiceBusQueueName)
+          deploymentMethod: 'auto'
