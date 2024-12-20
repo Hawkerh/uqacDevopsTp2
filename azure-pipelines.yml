@@ -111,6 +111,7 @@ stages:
           publishLocation: 'Container'
 
 
+
   - job: BuildAndDeployQueueFunction
     displayName: Build and Deploy Queue Function
     steps:
@@ -143,7 +144,7 @@ stages:
       - task: AzureFunctionApp@2
         displayName: Deploy Queue Function App
         inputs:
-          connectedServiceNameARM: 'Abonnement Azure 1(6)(cbaeadee-d4e6-419d-a0c8-2e1040e166be)'
+          connectedServiceNameARM: 'Abonnement 1(6)(cbaeadee-d4e6-419d-a0c8-2e1040e166be)'
           appType: 'functionApp'
           appName: '$(AzureFunctionAppName)'
           deployToSlotOrASE: true
@@ -153,8 +154,7 @@ stages:
           appSettings: |
             -ServiceBus_ConnectionString $(ServiceBusConnectionString)
             -ServiceBus_QueueName $(ServiceBusQueueName)
-
-
+          deploymentMethod: 'auto'
     
   - job: FunctionDeploy
     displayName: Function Deployment
