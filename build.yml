@@ -1,0 +1,77 @@
+trigger:
+  - master
+
+pool: "default"
+
+variables:
+  resourceGroupName: 'gaal'
+  location: 'Canada Central'
+
+stages:
+- stage: Build
+  displayName: Build Stage
+  jobs:
+  - job: BuildBlobFunction
+    displayName: Build Blob Function
+    steps:
+      - task: DotNetCoreCLI@2
+        displayName: Restore Project
+        inputs:
+          command: 'restore'
+          projects: '$(Build.SourcesDirectory)/BlobFunction/*.csproj'
+          
+      - task: DotNetCoreCLI@2
+        displayName: Build Azure Function
+        inputs:
+          command: 'build'
+          projects: '$(Build.SourcesDirectory)/BlobFunction/*.csproj'
+          arguments: '--configuration Release --output $(Build.BinariesDirectory)'
+
+      - task: DotNetCoreCLI@2
+        displayName: Publish Azure Function
+        inputs:
+          command: 'publish'
+          projects: '$(Build.SourcesDirectory)/BlobFunction/*.csproj'
+          arguments: '--configuration Release --output $(Build.ArtifactStagingDirectory)'
+          publishWebProjects: false
+          zipAfterPublish: true
+          modifyOutputPath: false
+
+      - task: PublishBuildArtifacts@1
+        displayName: Publish Build Artifacts
+        inputs:
+          PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+          ArtifactName: 'blob-function'
+          publishLocation: 'Container'
+
+  - job: BuildQueueFunction
+    displayName: Build Queue Function
+    steps:
+      - task: DotNetCoreCLI@2
+        displayName: Restore QueueFunction Project
+        inputs:
+          command: 'restore'
+          projects: '$(Build.SourcesDirectory)/QueueFunction/*.csproj'
+      
+      - task: DotNetCoreCLI@2
+        displayName: Build QueueFunction Project
+        inputs:
+          command: 'build'
+          projects: '$(Build.SourcesDirectory)/QueueFunction/*.csproj'
+          arguments: '--configuration Release --output $(Build.BinariesDirectory)'
+
+      - task: DotNetCoreCLI@2
+        displayName: Publish QueueFunction Project
+        inputs:
+          command: 'publish'
+          projects: '$(Build.SourcesDirectory)/QueueFunction/*.csproj'
+          arguments: '--configuration Release --output $(Build.ArtifactStagingDirectory)'
+          publishWebProjects: false
+          zipAfterPublish: true
+
+      - task: PublishBuildArtifacts@1
+        displayName: Publish Build Artifacts for Queue Function
+        inputs:
+          PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+          ArtifactName: 'queue-function'
+          publishLocation: 'Container'
