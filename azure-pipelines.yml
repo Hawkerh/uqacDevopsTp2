@@ -9,7 +9,6 @@ variables:
   BlobString: 'patate'
   AzureBlob: 'storagegaal'
   AzureFunctionAppName: 'gaaltriggerblob'
-  AzureQueueFunctionAppName: 'gaalqueuefunction'
   ServiceBusConnectionString: 'ServiceBusConnectionString'
   ServiceBusQueueName: 'ServiceBusQueueName'
 
@@ -30,8 +29,8 @@ stages:
           resourceGroupName: '$(resourceGroupName)'
           location: '$(location)'
           templateLocation: 'Linked artifact'
-          csmFile: '$(Build.SourcesDirectory)/DeployementTP2/storage/azuredeploy.json'
-          csmParametersFile: '$(Build.SourcesDirectory)/DeployementTP2/storage/azuredeploy.parameters.json'
+          csmFile: '$(Build.SourcesDirectory)/storage/azuredeploy.json'
+          csmParametersFile: '$(Build.SourcesDirectory)/storage/azuredeploy.parameters.json'
           deploymentMode: 'Incremental'
           deploymentOutputs: 'StorageAccountDeployment'
 
@@ -50,8 +49,8 @@ stages:
           resourceGroupName: '$(resourceGroupName)'
           location: '$(location)'
           templateLocation: 'Linked artifact'
-          csmFile: '$(Build.SourcesDirectory)/DeployementTP2/functionApp/azuredeploy.json'
-          csmParametersFile: '$(Build.SourcesDirectory)/DeployementTP2/functionApp/azuredeploy.parameters.json'
+          csmFile: '$(Build.SourcesDirectory)/functionApp/azuredeploy.json'
+          csmParametersFile: '$(Build.SourcesDirectory)/functionApp/azuredeploy.parameters.json'
             
             # Deploy Service Bus Resources
           deploymentMode: 'Incremental'
@@ -60,13 +59,13 @@ stages:
         inputs:
           deploymentScope: 'Resource Group'
           azureResourceManagerConnection: 'Abonnement 1(cbaeadee-d4e6-419d-a0c8-2e1040e166be)'
-          subscriptionId: '3e4d952d-facf-4882-a757-e4f0d348b6fb'
+          subscriptionId: 'cbaeadee-d4e6-419d-a0c8-2e1040e166be'
           action: 'Create Or Update Resource Group'
           resourceGroupName: '$(resourceGroupName)'
           location: '$(location)'
           templateLocation: 'Linked artifact'
-          csmFile: '$(Build.SourcesDirectory)/DeployementTP2/serviceBus/azuredeploy.json'
-          csmParametersFile: '$(Build.SourcesDirectory)/DeployementTP2/serviceBus/azuredeploy.parameters.json'
+          csmFile: '$(Build.SourcesDirectory)/serviceBus/azuredeploy.json'
+          csmParametersFile: '$(Build.SourcesDirectory)/serviceBus/azuredeploy.parameters.json'
           deploymentMode: 'Incremental'
           deploymentOutputs: 'ServiceBusOutputs'
 
@@ -87,20 +86,20 @@ stages:
         displayName: Restore Project
         inputs:
           command: 'restore'
-          projects: '$(Build.SourcesDirectory)/DeployementTP2/BlobFunction/*.csproj'
+          projects: '$(Build.SourcesDirectory)/BlobFunction/*.csproj'
           
       - task: DotNetCoreCLI@2
         displayName: Build Azure Function
         inputs:
           command: 'build'
-          projects: '$(Build.SourcesDirectory)/DeployementTP2/BlobFunction/*.csproj'
+          projects: '$(Build.SourcesDirectory)/BlobFunction/*.csproj'
           arguments: '--configuration Release --output $(Build.BinariesDirectory)'
 
       - task: DotNetCoreCLI@2
         displayName: Publish Azure Function
         inputs:
           command: 'publish'
-          projects: '$(Build.SourcesDirectory)/DeployementTP2/BlobFunction/*.csproj'
+          projects: '$(Build.SourcesDirectory)/BlobFunction/*.csproj'
           arguments: '--configuration Release --output $(Build.ArtifactStagingDirectory)'
           publishWebProjects: false
           zipAfterPublish: true
@@ -148,7 +147,7 @@ stages:
         inputs:
           connectedServiceNameARM: 'Abonnement Azure 1(3e4d952d-facf-4882-a757-e4f0d348b6fb)'
           appType: 'functionApp'
-          appName: '$(AzureQueueFunctionAppName)'
+          appName: '$(AzureFunctionAppName)'
           deployToSlotOrASE: true
           resourceGroupName: '$(resourceGroupName)'
           slotName: 'production'
