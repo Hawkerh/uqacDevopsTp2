@@ -69,8 +69,8 @@ stages:
           csmParametersFile: '$(System.DefaultWorkingDirectory)/functionApp/azuredeploy.parameters.json'
           deploymentMode: 'Incremental'
           overrideParameters: |
-            name='gaaltriggerQueue'
-            hostingPlanName='ASP-gaal-8b9r'
+            name=gaaltriggerQueue
+            hostingPlanName=ASP-gaal-8b9r
 
       - task: AzureResourceManagerTemplateDeployment@3
         displayName: Deploy Function App
