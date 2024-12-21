@@ -82,8 +82,9 @@ stages:
           csmFile: '$(System.DefaultWorkingDirectory)/functionApp/azuredeploy.json'
           csmParametersFile: '$(System.DefaultWorkingDirectory)/functionApp/azuredeploy.parameters.json'
           deploymentMode: 'Incremental'
-          overrideParameters: name=$(queueFunctionAppName)
-          
+          overrideParameters: |
+            name=$(queueFunctionAppName)
+            hostingPlanName=$(ASP-gaal-8b9r)
 
       - task: AzureResourceManagerTemplateDeployment@3
         displayName: Deploy Service Bus
