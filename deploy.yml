@@ -2,8 +2,8 @@ trigger: none
 
 resources:
   pipelines:
-  - pipeline: build
-    source: build # Nom de votre pipeline de build
+  - pipeline: BuildPipeline  # Nom de référence pour ce pipeline
+    source: build-pipeline   # Nom du pipeline de build dans Azure DevOps
     trigger: 
       branches:
         include:
@@ -26,9 +26,14 @@ stages:
   jobs:
   - job: DeployInfrastructure
     displayName: Deploy Azure Resources
+    outputs:
+      BlobStorageString: $[ steps.AssignKey.outputs['BlobString'] ]
+      ServiceBusConnString: $[ steps.AssignServiceBus.outputs['ServiceBusConnectionString'] ]
+      ServiceBusQueue: $[ steps.AssignServiceBus.outputs['ServiceBusQueueName'] ]
     steps:
       - task: AzureResourceManagerTemplateDeployment@3
         displayName: Deploy Azure Storage
+        name: StorageDeployment
         inputs:
           deploymentScope: 'Resource Group'
           azureResourceManagerConnection: 'Abonnement_Al(43b74e9f-9d96-4aa0-859d-e36e8ba472b9)'
@@ -37,15 +42,19 @@ stages:
           resourceGroupName: '$(resourceGroupName)'
           location: '$(location)'
           templateLocation: 'Linked artifact'
-          csmFile: '$(Build.SourcesDirectory)/storage/azuredeploy.json'
-          csmParametersFile: '$(Build.SourcesDirectory)/storage/azuredeploy.parameters.json'
+          csmFile: '$(System.DefaultWorkingDirectory)/storage/azuredeploy.json'
+          csmParametersFile: '$(System.DefaultWorkingDirectory)/storage/azuredeploy.parameters.json'
           deploymentMode: 'Incremental'
-          deploymentOutputs: 'StorageAccountDeployment'
+          deploymentOutputs: 'StorageOutputs'
 
-      - script: |
-          echo ##vso[task.setvariable variable=BlobString;isOutput=true;isSecure=true]$(StorageAccountDeployment.blobstoragestring.value)
-        displayName: Assign BlobString Variable
+      - task: PowerShell@2
         name: AssignKey
+        inputs:
+          targetType: 'inline'
+          script: |
+            $outputs = ConvertFrom-Json '$(StorageOutputs)'
+            $blobString = $outputs.blobstoragestring.value
+            Write-Host "##vso[task.setvariable variable=BlobString;isOutput=true]$blobString"
 
       - task: AzureResourceManagerTemplateDeployment@3
         displayName: Deploy Function App
@@ -57,12 +66,13 @@ stages:
           resourceGroupName: '$(resourceGroupName)'
           location: '$(location)'
           templateLocation: 'Linked artifact'
-          csmFile: '$(Build.SourcesDirectory)/functionApp/azuredeploy.json'
-          csmParametersFile: '$(Build.SourcesDirectory)/functionApp/azuredeploy.parameters.json'
+          csmFile: '$(System.DefaultWorkingDirectory)/functionApp/azuredeploy.json'
+          csmParametersFile: '$(System.DefaultWorkingDirectory)/functionApp/azuredeploy.parameters.json'
           deploymentMode: 'Incremental'
 
       - task: AzureResourceManagerTemplateDeployment@3
         displayName: Deploy Service Bus
+        name: ServiceBusDeployment
         inputs:
           deploymentScope: 'Resource Group'
           azureResourceManagerConnection: 'Abonnement_Al(43b74e9f-9d96-4aa0-859d-e36e8ba472b9)'
@@ -71,26 +81,34 @@ stages:
           resourceGroupName: '$(resourceGroupName)'
           location: '$(location)'
           templateLocation: 'Linked artifact'
-          csmFile: '$(Build.SourcesDirectory)/serviceBus/azuredeploy.json'
-          csmParametersFile: '$(Build.SourcesDirectory)/serviceBus/azuredeploy.parameters.json'
+          csmFile: '$(System.DefaultWorkingDirectory)/serviceBus/azuredeploy.json'
+          csmParametersFile: '$(System.DefaultWorkingDirectory)/serviceBus/azuredeploy.parameters.json'
           deploymentMode: 'Incremental'
           deploymentOutputs: 'ServiceBusOutputs'
 
-      - script: |
-          echo ##vso[task.setvariable variable=ServiceBusConnectionString;isOutput=true]$(ServiceBusOutputs.ServiceBusConnectionString.value)
-          echo ##vso[task.setvariable variable=ServiceBusQueueName;isOutput=true]$(ServiceBusOutputs.ServiceBusQueueName.value)
-        displayName: Assign Service Bus Outputs
+      - task: PowerShell@2
+        name: AssignServiceBus
+        inputs:
+          targetType: 'inline'
+          script: |
+            $outputs = ConvertFrom-Json '$(ServiceBusOutputs)'
+            $connString = $outputs.ServiceBusConnectionString.value
+            $queueName = $outputs.ServiceBusQueueName.value
+            Write-Host "##vso[task.setvariable variable=ServiceBusConnectionString;isOutput=true]$connString"
+            Write-Host "##vso[task.setvariable variable=ServiceBusQueueName;isOutput=true]$queueName"
 
 - stage: DeployFunctions
   displayName: Deploy Functions
   dependsOn: Infrastructure
   variables:
     blobstring: $[ stageDependencies.Infrastructure.DeployInfrastructure.outputs['AssignKey.BlobString'] ]
+    serviceBusConnString: $[ stageDependencies.Infrastructure.DeployInfrastructure.outputs['AssignServiceBus.ServiceBusConnectionString'] ]
+    serviceBusQueueName: $[ stageDependencies.Infrastructure.DeployInfrastructure.outputs['AssignServiceBus.ServiceBusQueueName'] ]
   jobs:
   - job: DeployBlobFunction
     displayName: Deploy Blob Function
     steps:
-      - download: build-pipeline
+      - download: BuildPipeline
         artifact: blob-function
         
       - task: AzureFunctionApp@2
@@ -102,14 +120,14 @@ stages:
           deployToSlotOrASE: true
           resourceGroupName: '$(resourceGroupName)'
           slotName: 'production'
-          package: '$(Pipeline.Workspace)/build-pipeline/blob-function/**/*.zip'
+          package: '$(Pipeline.Workspace)/BuildPipeline/blob-function/**/*.zip'
           appSettings: '-Blob_ConnectionString $(blobstring) -Blob_ConnectionString__blob "https://$(AzureBlob).blob.core.windows.net/"'
           deploymentMethod: 'runFromPackage'
 
   - job: DeployQueueFunction
     displayName: Deploy Queue Function
     steps:
-      - download: build-pipeline
+      - download: BuildPipeline
         artifact: queue-function
         
       - task: AzureFunctionApp@2
@@ -121,8 +139,8 @@ stages:
           deployToSlotOrASE: true
           resourceGroupName: '$(resourceGroupName)'
           slotName: 'production'
-          package: '$(Pipeline.Workspace)/build-pipeline/queue-function/**/*.zip'
+          package: '$(Pipeline.Workspace)/BuildPipeline/queue-function/**/*.zip'
           appSettings: |
-            -ServiceBus_ConnectionString $(ServiceBusConnectionString)
-            -ServiceBus_QueueName $(ServiceBusQueueName)
+            -ServiceBus_ConnectionString $(serviceBusConnString)
+            -ServiceBus_QueueName $(serviceBusQueueName)
           deploymentMethod: 'auto'
