@@ -9,6 +9,8 @@ resources:
         include:
           - master
 
+pool: "default"
+
 variables:
   resourceGroupName: 'gaal'
   location: 'Canada Central'
@@ -102,15 +104,9 @@ stages:
   - job: DeployBlobFunction
     displayName: Deploy Blob Function
     steps:
-      - task: DownloadPipelineArtifact@2
-        inputs:
-          buildType: 'specific'
-          project: '$(System.TeamProject)'
-          definition: 'build-pipeline'
-          buildVersionToDownload: 'latest'
-          artifactName: 'blob-function'
-          targetPath: '$(Pipeline.Workspace)/blob-function'
-
+      - download: build
+        artifact: blob-function
+        
       - task: AzureFunctionApp@2
         displayName: Deploy Blob Function
         inputs:
@@ -120,21 +116,15 @@ stages:
           deployToSlotOrASE: true
           resourceGroupName: '$(resourceGroupName)'
           slotName: 'production'
-          package: '$(Pipeline.Workspace)/blob-function/**/*.zip'
+          package: '$(Pipeline.Workspace)/build/blob-function/**/*.zip'
           appSettings: '-Blob_ConnectionString $(blobstring) -Blob_ConnectionString__blob "https://$(AzureBlob).blob.core.windows.net/"'
           deploymentMethod: 'runFromPackage'
 
   - job: DeployQueueFunction
     displayName: Deploy Queue Function
     steps:
-      - task: DownloadPipelineArtifact@2
-        inputs:
-          buildType: 'specific'
-          project: '$(System.TeamProject)'
-          definition: 'build-pipeline'
-          buildVersionToDownload: 'latest'
-          artifactName: 'queue-function'
-          targetPath: '$(Pipeline.Workspace)/queue-function'
+      - download: build
+        artifact: queue-function
         
       - task: AzureFunctionApp@2
         displayName: Deploy Queue Function
@@ -145,7 +135,7 @@ stages:
           deployToSlotOrASE: true
           resourceGroupName: '$(resourceGroupName)'
           slotName: 'production'
-          package: '$(Pipeline.Workspace)/queue-function/**/*.zip'
+          package: '$(Pipeline.Workspace)/build/queue-function/**/*.zip'
           appSettings: |
             -ServiceBus_ConnectionString $(serviceBusConnString)
             -ServiceBus_QueueName $(serviceBusQueueName)
