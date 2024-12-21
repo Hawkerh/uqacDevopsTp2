@@ -68,6 +68,9 @@ stages:
           csmFile: '$(System.DefaultWorkingDirectory)/functionApp/azuredeploy.json'
           csmParametersFile: '$(System.DefaultWorkingDirectory)/functionApp/azuredeploy.parameters.json'
           deploymentMode: 'Incremental'
+          overrideParameters: |
+            name='gaaltriggerQueue'
+            hostingPlanName='ASP-gaal-8b9r'
 
       - task: AzureResourceManagerTemplateDeployment@3
         displayName: Deploy Function App
@@ -82,9 +85,7 @@ stages:
           csmFile: '$(System.DefaultWorkingDirectory)/functionApp/azuredeploy.json'
           csmParametersFile: '$(System.DefaultWorkingDirectory)/functionApp/azuredeploy.parameters.json'
           deploymentMode: 'Incremental'
-          overrideParameters: |
-            name=$(queueFunctionAppName)
-            hostingPlanName=$(ASP-gaal-8b9r)
+
 
       - task: AzureResourceManagerTemplateDeployment@3
         displayName: Deploy Service Bus
@@ -155,6 +156,6 @@ stages:
           slotName: 'production'
           package: '$(Pipeline.Workspace)/build/queue-function/**/*.zip'
           appSettings: |
-            -ServiceBus_ConnectionString $(serviceBusConnString)
-            -ServiceBus_QueueName $(serviceBusQueueName)
+            -ServiceBus_ConnectionString '$(serviceBusConnString)'
+            -ServiceBus_QueueName '$(serviceBusQueueName)'
           deploymentMethod: 'auto'
