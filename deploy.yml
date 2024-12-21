@@ -2,8 +2,8 @@ trigger: none
 
 resources:
   pipelines:
-  - pipeline: BuildPipeline  # Nom de référence pour ce pipeline
-    source: build-pipeline   # Nom du pipeline de build dans Azure DevOps
+  - pipeline: build
+    source: build
     trigger: 
       branches:
         include:
@@ -26,10 +26,10 @@ stages:
   jobs:
   - job: DeployInfrastructure
     displayName: Deploy Azure Resources
-    outputs:
-      BlobStorageString: $[ steps.AssignKey.outputs['BlobString'] ]
-      ServiceBusConnString: $[ steps.AssignServiceBus.outputs['ServiceBusConnectionString'] ]
-      ServiceBusQueue: $[ steps.AssignServiceBus.outputs['ServiceBusQueueName'] ]
+    variables:
+      blobstring: ''
+      serviceBusConnString: ''
+      serviceBusQueueName: ''
     steps:
       - task: AzureResourceManagerTemplateDeployment@3
         displayName: Deploy Azure Storage
@@ -47,14 +47,12 @@ stages:
           deploymentMode: 'Incremental'
           deploymentOutputs: 'StorageOutputs'
 
-      - task: PowerShell@2
-        name: AssignKey
-        inputs:
-          targetType: 'inline'
-          script: |
-            $outputs = ConvertFrom-Json '$(StorageOutputs)'
-            $blobString = $outputs.blobstoragestring.value
-            Write-Host "##vso[task.setvariable variable=BlobString;isOutput=true]$blobString"
+      - powershell: |
+          $outputs = ConvertFrom-Json '$(StorageOutputs)'
+          $blobString = $outputs.blobstoragestring.value
+          Write-Host "##vso[task.setvariable variable=blobstring;isOutput=true]$blobString"
+        name: SetBlobString
+        displayName: Set Blob Connection String
 
       - task: AzureResourceManagerTemplateDeployment@3
         displayName: Deploy Function App
@@ -86,24 +84,22 @@ stages:
           deploymentMode: 'Incremental'
           deploymentOutputs: 'ServiceBusOutputs'
 
-      - task: PowerShell@2
-        name: AssignServiceBus
-        inputs:
-          targetType: 'inline'
-          script: |
-            $outputs = ConvertFrom-Json '$(ServiceBusOutputs)'
-            $connString = $outputs.ServiceBusConnectionString.value
-            $queueName = $outputs.ServiceBusQueueName.value
-            Write-Host "##vso[task.setvariable variable=ServiceBusConnectionString;isOutput=true]$connString"
-            Write-Host "##vso[task.setvariable variable=ServiceBusQueueName;isOutput=true]$queueName"
+      - powershell: |
+          $outputs = ConvertFrom-Json '$(ServiceBusOutputs)'
+          $connString = $outputs.ServiceBusConnectionString.value
+          $queueName = $outputs.ServiceBusQueueName.value
+          Write-Host "##vso[task.setvariable variable=serviceBusConnString;isOutput=true]$connString"
+          Write-Host "##vso[task.setvariable variable=serviceBusQueueName;isOutput=true]$queueName"
+        name: SetServiceBusVars
+        displayName: Set Service Bus Variables
 
 - stage: DeployFunctions
   displayName: Deploy Functions
   dependsOn: Infrastructure
   variables:
-    blobstring: $[ stageDependencies.Infrastructure.DeployInfrastructure.outputs['AssignKey.BlobString'] ]
-    serviceBusConnString: $[ stageDependencies.Infrastructure.DeployInfrastructure.outputs['AssignServiceBus.ServiceBusConnectionString'] ]
-    serviceBusQueueName: $[ stageDependencies.Infrastructure.DeployInfrastructure.outputs['AssignServiceBus.ServiceBusQueueName'] ]
+    blobstring: $[ dependencies.Infrastructure.outputs['DeployInfrastructure.SetBlobString.blobstring'] ]
+    serviceBusConnString: $[ dependencies.Infrastructure.outputs['DeployInfrastructure.SetServiceBusVars.serviceBusConnString'] ]
+    serviceBusQueueName: $[ dependencies.Infrastructure.outputs['DeployInfrastructure.SetServiceBusVars.serviceBusQueueName'] ]
   jobs:
   - job: DeployBlobFunction
     displayName: Deploy Blob Function
