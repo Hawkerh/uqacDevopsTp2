@@ -65,12 +65,9 @@ stages:
           resourceGroupName: '$(resourceGroupName)'
           location: '$(location)'
           templateLocation: 'Linked artifact'
-          csmFile: '$(System.DefaultWorkingDirectory)/functionApp/azuredeploy.json'
-          csmParametersFile: '$(System.DefaultWorkingDirectory)/functionApp/azuredeploy.parameters.json'
+          csmFile: '$(System.DefaultWorkingDirectory)/functionAppQueue/azuredeploy.json'
+          csmParametersFile: '$(System.DefaultWorkingDirectory)/functionAppQueue/azuredeploy.parameters.json'
           deploymentMode: 'Incremental'
-          overrideParameters: |
-            name=gaaltriggerQueue
-            hostingPlanName=ASP-gaal-8b9r
 
       - task: AzureResourceManagerTemplateDeployment@3
         displayName: Deploy Function App

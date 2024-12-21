@@ -1,0 +1,51 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+      "subscriptionId": {
+          "value": "49cf333e-f9ea-40ed-b006-dd5f16f2add5"
+      },
+      "name": {
+          "value": "gaaltriggerblob"
+      },
+      "location": {
+          "value": "Canada Central"
+      },
+      "ftpsState": {
+          "value": "FtpsOnly"
+      },
+      "storageAccountName": {
+          "value": "storagegaal"
+      },
+      "sku": {
+          "value": "Dynamic"
+      },
+      "skuCode": {
+          "value": "Y1"
+      },
+      "workerSize": {
+          "value": "0"
+      },
+      "workerSizeId": {
+          "value": "0"
+      },
+      "numberOfWorkers": {
+          "value": "1"
+      },
+      "use32BitWorkerProcess": {
+          "value": false
+      },
+      "netFrameworkVersion": {
+          "value": "v8.0"
+      },
+      "hostingPlanName": {
+          "value": "ASP-gaal-8b9e"
+      },
+      "serverFarmResourceGroup": {
+          "value": "gaal"
+      },
+      "alwaysOn": {
+          "value": false
+      }
+  }
+}
