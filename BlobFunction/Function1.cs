@@ -27,7 +27,7 @@ namespace BlobFunction
         }
 
         [Function("Function1")]
-        public async Task RunAsync(
+        public async Task Run(
             [BlobTrigger("Blob/{name}", Connection = "DefaultEndpointsProtocol=https;AccountName=gaaldsa;AccountKey=j+1jnGnPmh/I6iIjZu7YuJKsTQmhiGlH9ySBBQcOMYRFFoE8fQrNHor1OJEse8whswWFwNQeeRNm+ASt28SdqQ==;EndpointSuffix=core.windows.net")] string myBlob,
             string name)
         {
