@@ -18,7 +18,7 @@ stages:
         displayName: Validate Storage Template
         inputs:
           deploymentScope: 'Resource Group'
-          azureResourceManagerConnection: 'Abonnement_Al(49cf333e-f9ea-40ed-b006-dd5f16f2add5)'
+          azureResourceManagerConnection: 'ab_ac(49cf333e-f9ea-40ed-b006-dd5f16f2add5)'
           subscriptionId: '49cf333e-f9ea-40ed-b006-dd5f16f2add5'
           action: 'Create Or Update Resource Group'
           resourceGroupName: '$(resourceGroupName)'
@@ -32,7 +32,7 @@ stages:
         displayName: Validate Function App Template
         inputs:
           deploymentScope: 'Resource Group'
-          azureResourceManagerConnection: 'Abonnement_Al(49cf333e-f9ea-40ed-b006-dd5f16f2add5)'
+          azureResourceManagerConnection: 'ab_ac(49cf333e-f9ea-40ed-b006-dd5f16f2add5)'
           subscriptionId: '49cf333e-f9ea-40ed-b006-dd5f16f2add5'
           action: 'Create Or Update Resource Group'
           resourceGroupName: '$(resourceGroupName)'
@@ -46,7 +46,7 @@ stages:
         displayName: Validate Service Bus Template
         inputs:
           deploymentScope: 'Resource Group'
-          azureResourceManagerConnection: 'Abonnement_Al(49cf333e-f9ea-40ed-b006-dd5f16f2add5)'
+          azureResourceManagerConnection: 'ab_ac(49cf333e-f9ea-40ed-b006-dd5f16f2add5)'
           subscriptionId: '49cf333e-f9ea-40ed-b006-dd5f16f2add5'
           action: 'Create Or Update Resource Group'
           resourceGroupName: '$(resourceGroupName)'
