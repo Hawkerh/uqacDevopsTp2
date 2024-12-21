@@ -102,6 +102,7 @@ stages:
   - job: DeployBlobFunction
     displayName: Deploy Blob Function
     steps:
+<<<<<<< HEAD
       - task: DownloadPipelineArtifact@2
         inputs:
           buildType: 'specific'
@@ -111,6 +112,11 @@ stages:
           artifactName: 'blob-function'
           targetPath: '$(Pipeline.Workspace)/blob-function'
 
+=======
+      - download: build
+        artifact: blob-function
+        
+>>>>>>> 37804fe4e69bc9b806faff6ae3964a87c97ada75
       - task: AzureFunctionApp@2
         displayName: Deploy Blob Function
         inputs:
@@ -120,13 +126,18 @@ stages:
           deployToSlotOrASE: true
           resourceGroupName: '$(resourceGroupName)'
           slotName: 'production'
+<<<<<<< HEAD
           package: '$(Pipeline.Workspace)/blob-function/**/*.zip'
+=======
+          package: '$(Pipeline.Workspace)/build/blob-function/**/*.zip'
+>>>>>>> 37804fe4e69bc9b806faff6ae3964a87c97ada75
           appSettings: '-Blob_ConnectionString $(blobstring) -Blob_ConnectionString__blob "https://$(AzureBlob).blob.core.windows.net/"'
           deploymentMethod: 'runFromPackage'
 
   - job: DeployQueueFunction
     displayName: Deploy Queue Function
     steps:
+<<<<<<< HEAD
       - task: DownloadPipelineArtifact@2
         inputs:
           buildType: 'specific'
@@ -135,6 +146,10 @@ stages:
           buildVersionToDownload: 'latest'
           artifactName: 'queue-function'
           targetPath: '$(Pipeline.Workspace)/queue-function'
+=======
+      - download: build
+        artifact: queue-function
+>>>>>>> 37804fe4e69bc9b806faff6ae3964a87c97ada75
         
       - task: AzureFunctionApp@2
         displayName: Deploy Queue Function
@@ -145,7 +160,11 @@ stages:
           deployToSlotOrASE: true
           resourceGroupName: '$(resourceGroupName)'
           slotName: 'production'
+<<<<<<< HEAD
           package: '$(Pipeline.Workspace)/queue-function/**/*.zip'
+=======
+          package: '$(Pipeline.Workspace)/build/queue-function/**/*.zip'
+>>>>>>> 37804fe4e69bc9b806faff6ae3964a87c97ada75
           appSettings: |
             -ServiceBus_ConnectionString $(serviceBusConnString)
             -ServiceBus_QueueName $(serviceBusQueueName)
